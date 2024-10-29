@@ -1,0 +1,60 @@
+# kubernetes backend deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-backend
+  namespace: rest-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rest-backend
+  template:
+    metadata:
+      labels:
+        app: rest-backend
+    spec:
+      containers:
+        - name: rest-backend
+          image: ghenac/rest-2-backend:latest
+          ports:
+            - containerPort: 6001
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+          env:
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: rest-backend-secrets
+                  key: SECRET
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: rest-backend-secrets
+                  key: MONGODB_URI
+            - name: CLOUD_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: rest-backend-secrets
+                  key: CLOUD_NAME
+            - name: CLOUD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rest-backend-secrets
+                  key: CLOUD_API_KEY
+            - name: CLOUD_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: rest-backend-secrets
+                  key: CLOUD_API_SECRET
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rest-backend-secrets
+                  key: PORT
